@@ -1,0 +1,19 @@
+{
+  "name": "fileexplorer",
+  "version": "1.0.0",
+  "description": "File explorer application ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "FileExplorer"
+  },
+  "keywords": [
+    "File",
+    "Explorer"
+  ],
+  "author": "Zivai Ruzive Chembwa",
+  "license": "ISC"
+}
