@@ -12,23 +12,23 @@ function _replace(pattern, string, replacement){
     return string.replace(re,replacement)
 }
 
+function _get_full_path(pathname){
+    const BaseStaticPath = path.join(__dirname, '..', STATIC_FOLDER_NAME);
+    const decode_url = _replace(SPACE, decodeURIComponent(pathname), NO_SPACE );
+    return (path.join(BaseStaticPath, decode_url), BaseStaticPath)
+
+}
+
 const handler = (request, response)=>{
     response.writeHead(200, {"Content-Type":"text/html"});
     let pathname = request.url;
-
-    //static BaseFile for file on the server
-    const BaseStaticPath = path.join(__dirname,'..',STATIC_FOLDER_NAME);
-
-
     // exclude favicon ico from the returned path
     if (pathname == FAVICON){
-        return false }
-
-    // uriComponent replace with space 
-    // wrapper _replace remove those spaces
-    decode_url = _replace(SPACE,decodeURIComponent(pathname),NO_SPACE);
+        return false;
+    }
     // full static file rom url; 
-    const FullPathName = path.join(BaseStaticPath, decode_url);
+    const files = _get_full_path(pathname)[0];
+    const FullPathName = files[0]
     // check if exist 
     let stat;
     if(!fs.existsSync(FullPathName)){
@@ -48,7 +48,7 @@ const handler = (request, response)=>{
     if(stat.isDirectory()){
         let data = fs.readFileSync(
             path.join(
-                BaseStaticPath, 'project_files/index.html')
+                files[1], 'project_files/index.html')
                 , 'utf-8')
         response.statusCode = 200;
         response.write(data);
