@@ -15,7 +15,9 @@ function _replace(pattern, string, replacement){
 function _get_full_path(pathname){
     const BaseStaticPath = path.join(__dirname, '..', STATIC_FOLDER_NAME);
     const decode_url = _replace(SPACE, decodeURIComponent(pathname), NO_SPACE );
-    return (path.join(BaseStaticPath, decode_url), BaseStaticPath)
+    const real_path  = path.join(BaseStaticPath, decode_url)
+    return Object.create({real_path: real_path, base: BaseStaticPath})
+
 
 }
 
@@ -27,13 +29,12 @@ const handler = (request, response)=>{
         return false;
     }
     // full static file rom url; 
-    const files = _get_full_path(pathname)[0];
-    const FullPathName = files[0]
+    const paths = _get_full_path(pathname);
+    const FullPathName = paths.real_path;
     // check if exist 
     let stat;
     if(!fs.existsSync(FullPathName)){
-        response.write('404: File Not Found\n')
-        response.end()
+        response.end('404: File Not Found\n')
         return false;
         
     }else{
@@ -48,11 +49,10 @@ const handler = (request, response)=>{
     if(stat.isDirectory()){
         let data = fs.readFileSync(
             path.join(
-                files[1], 'project_files/index.html')
+                paths.base, 'project_files/index.html')
                 , 'utf-8')
         response.statusCode = 200;
-        response.write(data);
-        response.end()
+        response.end(data);
     }
 }
 
